@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.aluraone.modules.views;
+package com.aluraone.modules.conversor.views;
 
 import javax.swing.WindowConstants;
 
@@ -61,7 +61,7 @@ public class MenuView extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/aluraone/modules/views/images/icons8-euro-exchange-100.png"))); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/aluraone/modules/conversor/views/images/icons8-euro-exchange-100.png"))); // NOI18N
 
         jLabel3.setBackground(new java.awt.Color(255, 255, 255));
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -96,7 +96,7 @@ public class MenuView extends javax.swing.JFrame {
         panTemperatura.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         panTemperatura.setPreferredSize(new java.awt.Dimension(220, 220));
 
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/aluraone/modules/views/images/temperature.png"))); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/aluraone/modules/conversor/views/images/temperature.png"))); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));

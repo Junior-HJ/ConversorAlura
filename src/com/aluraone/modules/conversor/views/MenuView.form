@@ -121,7 +121,7 @@
             <Component class="javax.swing.JLabel" name="jLabel2">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/com/aluraone/modules/views/images/icons8-euro-exchange-100.png"/>
+                  <Image iconType="3" name="/com/aluraone/modules/conversor/views/images/icons8-euro-exchange-100.png"/>
                 </Property>
               </Properties>
             </Component>
@@ -185,7 +185,7 @@
             <Component class="javax.swing.JLabel" name="jLabel4">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/com/aluraone/modules/views/images/temperature.png"/>
+                  <Image iconType="3" name="/com/aluraone/modules/conversor/views/images/temperature.png"/>
                 </Property>
               </Properties>
             </Component>
