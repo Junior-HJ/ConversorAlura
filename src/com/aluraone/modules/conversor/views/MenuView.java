@@ -19,7 +19,6 @@ public class MenuView extends javax.swing.JFrame {
 	setTitle("MENU");
 	initComponents();
 	this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-	this.setSize(619, 466); // [619, 466]
 	this.setResizable(false); // Deshabilitar la redimensión
 	this.setLocationRelativeTo(null); // Generar en el centro de la pantalla
 	this.setVisible(true);
@@ -181,6 +180,8 @@ public class MenuView extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+
+        setBounds(0, 0, 635, 474);
     }// </editor-fold>//GEN-END:initComponents
 
     private void panMonedasMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panMonedasMouseEntered

@@ -5,6 +5,18 @@
 package com.aluraone.modules.conversor.views;
 
 import javax.swing.WindowConstants;
+import com.aluraone.modules.conversor.services.ConversorMonedasService;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import org.json.JSONObject;
 
 /**
  *
@@ -12,17 +24,24 @@ import javax.swing.WindowConstants;
  */
 public class ConversorMonedasView extends javax.swing.JFrame {
 
+    ConversorMonedasService conversorMonedasService = new ConversorMonedasService();
+
     /**
      * Creates new form ConversorMonedasView
      */
     public ConversorMonedasView() {
 	setTitle("MENU");
 	initComponents();
-	this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-	this.setSize(766, 539); // [766, 539]
+	this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	this.setResizable(false); // Deshabilitar la redimensión
 	this.setLocationRelativeTo(null); // Generar en el centro de la pantalla
 	this.setVisible(true);
+	try {
+	    cargarDatosEnCboDe();
+	    cargarDatosEnCboA();
+	} catch (IOException ex) {
+	    Logger.getLogger(ConversorMonedasView.class.getName()).log(Level.SEVERE, null, ex);
+	}
     }
 
     /**
@@ -43,7 +62,7 @@ public class ConversorMonedasView extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         cboA = new javax.swing.JComboBox<>();
         lblResultado = new javax.swing.JLabel();
-        panMonedas1 = new javax.swing.JPanel();
+        btnConvertir = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -54,16 +73,8 @@ public class ConversorMonedasView extends javax.swing.JFrame {
 
         panMonedas.setBackground(new java.awt.Color(204, 204, 204));
         panMonedas.setForeground(new java.awt.Color(60, 63, 65));
-        panMonedas.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        panMonedas.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         panMonedas.setPreferredSize(new java.awt.Dimension(220, 220));
-        panMonedas.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                panMonedasMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                panMonedasMouseEntered(evt);
-            }
-        });
 
         jLabel3.setBackground(new java.awt.Color(255, 255, 255));
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -96,16 +107,16 @@ public class ConversorMonedasView extends javax.swing.JFrame {
         lblResultado.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lblResultado.setForeground(new java.awt.Color(0, 0, 0));
 
-        panMonedas1.setBackground(new java.awt.Color(153, 153, 153));
-        panMonedas1.setForeground(new java.awt.Color(60, 63, 65));
-        panMonedas1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        panMonedas1.setPreferredSize(new java.awt.Dimension(220, 220));
-        panMonedas1.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnConvertir.setBackground(new java.awt.Color(153, 153, 153));
+        btnConvertir.setForeground(new java.awt.Color(60, 63, 65));
+        btnConvertir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnConvertir.setPreferredSize(new java.awt.Dimension(220, 220));
+        btnConvertir.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                panMonedas1MouseClicked(evt);
+                btnConvertirMouseClicked(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                panMonedas1MouseEntered(evt);
+                btnConvertirMouseEntered(evt);
             }
         });
 
@@ -116,19 +127,24 @@ public class ConversorMonedasView extends javax.swing.JFrame {
         jLabel7.setText("Convertir");
         jLabel7.setToolTipText("");
         jLabel7.setAlignmentY(0.0F);
+        jLabel7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel7MouseClicked(evt);
+            }
+        });
 
-        javax.swing.GroupLayout panMonedas1Layout = new javax.swing.GroupLayout(panMonedas1);
-        panMonedas1.setLayout(panMonedas1Layout);
-        panMonedas1Layout.setHorizontalGroup(
-            panMonedas1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panMonedas1Layout.createSequentialGroup()
+        javax.swing.GroupLayout btnConvertirLayout = new javax.swing.GroupLayout(btnConvertir);
+        btnConvertir.setLayout(btnConvertirLayout);
+        btnConvertirLayout.setHorizontalGroup(
+            btnConvertirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(btnConvertirLayout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(jLabel7)
                 .addContainerGap(21, Short.MAX_VALUE))
         );
-        panMonedas1Layout.setVerticalGroup(
-            panMonedas1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panMonedas1Layout.createSequentialGroup()
+        btnConvertirLayout.setVerticalGroup(
+            btnConvertirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(btnConvertirLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
                 .addContainerGap())
@@ -139,47 +155,50 @@ public class ConversorMonedasView extends javax.swing.JFrame {
         panMonedasLayout.setHorizontalGroup(
             panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panMonedasLayout.createSequentialGroup()
-                .addGap(6, 6, 6)
                 .addGroup(panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panMonedasLayout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(135, 135, 135)
-                        .addComponent(jLabel4)
-                        .addGap(205, 205, 205)
-                        .addComponent(jLabel5))
+                        .addContainerGap()
+                        .addComponent(lblResultado, javax.swing.GroupLayout.PREFERRED_SIZE, 722, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panMonedasLayout.createSequentialGroup()
-                        .addComponent(txtImporte, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(49, 49, 49)
-                        .addComponent(cboDe, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(54, 54, 54)
-                        .addComponent(cboA, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(lblResultado, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(84, 84, 84))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panMonedasLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(panMonedas1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(45, 45, 45))
+                        .addGap(6, 6, 6)
+                        .addGroup(panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnConvertir, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panMonedasLayout.createSequentialGroup()
+                                .addGroup(panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addGroup(panMonedasLayout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(txtImporte, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(19, 19, 19)
+                                .addGroup(panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addGroup(panMonedasLayout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(cboDe, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(20, 20, 20)
+                                .addGroup(panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5)
+                                    .addGroup(panMonedasLayout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(cboA, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         panMonedasLayout.setVerticalGroup(
             panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panMonedasLayout.createSequentialGroup()
                 .addGap(6, 6, 6)
-                .addGroup(panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jLabel4)
                     .addComponent(jLabel5))
-                .addGroup(panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panMonedasLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addGroup(panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtImporte, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cboDe, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(panMonedasLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboA, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(32, 32, 32)
-                .addComponent(panMonedas1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
+                .addGap(6, 6, 6)
+                .addGroup(panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtImporte, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboDe, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboA, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
+                .addComponent(btnConvertir, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
                 .addComponent(lblResultado, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(23, Short.MAX_VALUE))
         );
@@ -197,7 +216,7 @@ public class ConversorMonedasView extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(227, 227, 227)
                 .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(271, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -213,17 +232,16 @@ public class ConversorMonedasView extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addComponent(panMonedas, javax.swing.GroupLayout.PREFERRED_SIZE, 689, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addGap(14, 14, 14)
+                .addComponent(panMonedas, javax.swing.GroupLayout.PREFERRED_SIZE, 778, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49)
+                .addGap(52, 52, 52)
                 .addComponent(panMonedas, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -236,29 +254,75 @@ public class ConversorMonedasView extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void panMonedasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panMonedasMouseClicked
-        ConversorMonedasView conversorMonedasView = new ConversorMonedasView();
-        conversorMonedasView.setVisible(true);
-    }//GEN-LAST:event_panMonedasMouseClicked
+    private void btnConvertirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConvertirMouseClicked
+	try {
+	    convertirMonedas();
+	} catch (IOException ex) {
+	    Logger.getLogger(ConversorMonedasView.class.getName()).log(Level.SEVERE, null, ex);
+	}
+    }//GEN-LAST:event_btnConvertirMouseClicked
 
-    private void panMonedasMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panMonedasMouseEntered
+    private void btnConvertirMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConvertirMouseEntered
 
-    }//GEN-LAST:event_panMonedasMouseEntered
+    }//GEN-LAST:event_btnConvertirMouseEntered
 
-    private void panMonedas1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panMonedas1MouseClicked
-        ConversorMonedasView conversorMonedasView = new ConversorMonedasView();
-        conversorMonedasView.setVisible(true);
-    }//GEN-LAST:event_panMonedas1MouseClicked
+    private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
+	try {
+	    convertirMonedas();
+	} catch (IOException ex) {
+	    Logger.getLogger(ConversorMonedasView.class.getName()).log(Level.SEVERE, null, ex);
+	}
+    }//GEN-LAST:event_jLabel7MouseClicked
 
-    private void panMonedas1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panMonedas1MouseEntered
+    private String obtenerCodigoMonedaSeleccionada(JComboBox<String> comboBox) {
+	String selectedCurrency = (String) comboBox.getSelectedItem();
+	if (selectedCurrency != null) {
+	    int startIndex = selectedCurrency.lastIndexOf("(");
+	    int endIndex = selectedCurrency.lastIndexOf(")");
+	    if (startIndex >= 0 && endIndex > startIndex) {
+		return selectedCurrency.substring(startIndex + 1, endIndex);
+	    }
+	}
+	return null;
+    }
 
-    }//GEN-LAST:event_panMonedas1MouseEntered
+    private void convertirMonedas() throws IOException {
+	String selectedCurrencyDe = obtenerCodigoMonedaSeleccionada(cboDe);
+	String selectedCurrencyA = obtenerCodigoMonedaSeleccionada(cboA);
+	String amount = txtImporte.getText();
+	if (selectedCurrencyDe != null && selectedCurrencyA != null && !"".equals(amount)) {
+	    conversorMonedasService.setSelectedCurrencies(selectedCurrencyDe, selectedCurrencyA);
+	    conversorMonedasService.setAmount(Double.parseDouble(amount));
+	    lblResultado.setText(amount + " " + cboDe.getSelectedItem() + " equivalen a " + String.valueOf(conversorMonedasService.convertirMonedas()) + " " + cboA.getSelectedItem());
+	} else {
+        JOptionPane.showMessageDialog(this, "Debe seleccionar las monedas y ademas ingresar el importe a convertir", "Error", JOptionPane.ERROR_MESSAGE);
+	}
+    }
+
+    private void cargarDatosEnComboBox(JComboBox<String> comboBox) throws IOException {
+    comboBox.removeAllItems();
+    JSONObject symbols = conversorMonedasService.getExchangeSymbols();
+    List<JSONObject> symbolList = conversorMonedasService.obtenerListaOrdenadaDeSymbols(symbols);
+    for (JSONObject currency : symbolList) {
+        String description = currency.getString("description");
+        String code = currency.getString("code");
+        comboBox.addItem(description + " (" + code + ")");
+    }
+}
+
+    private void cargarDatosEnCboDe() throws IOException {
+	cargarDatosEnComboBox(cboDe);
+    }
+
+    private void cargarDatosEnCboA() throws IOException {
+	cargarDatosEnComboBox(cboA);
+    }
 
     /**
      * @param args the command line arguments
@@ -289,14 +353,13 @@ public class ConversorMonedasView extends javax.swing.JFrame {
 	//</editor-fold>
 
 	/* Create and display the form */
-	java.awt.EventQueue.invokeLater(new Runnable() {
-	    public void run() {
-		new ConversorMonedasView().setVisible(true);
-	    }
+	java.awt.EventQueue.invokeLater(() -> {
+	    new ConversorMonedasView().setVisible(true);
 	});
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel btnConvertir;
     private javax.swing.JComboBox<String> cboA;
     private javax.swing.JComboBox<String> cboDe;
     private javax.swing.JLabel jLabel1;
@@ -308,7 +371,6 @@ public class ConversorMonedasView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblResultado;
     private javax.swing.JPanel panMonedas;
-    private javax.swing.JPanel panMonedas1;
     private javax.swing.JTextField txtImporte;
     // End of variables declaration//GEN-END:variables
 }

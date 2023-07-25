@@ -5,39 +5,75 @@
 package com.aluraone.modules.conversor.services;
 
 import java.io.IOException;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 import org.json.JSONObject;
 
 public class ConversorMonedasService {
 
-    private final OkHttpClient client;
+    private String fromCurrency;
+    private String toCurrency;
+    private double amount;
 
     public ConversorMonedasService() {
-        client = new OkHttpClient();
     }
 
     public String sendRequestExchangeRates(String apiUrl) throws IOException {
-        Request request = new Request.Builder()
-            .url(apiUrl)
-            .build();
+	URL url = new URL(apiUrl);
+	HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+	connection.setRequestMethod("GET");
 
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                throw new IOException("Error al realizar la solicitud. Código de respuesta: " + response.code());
-            }
-
-            return response.body() != null ? response.body().string() : "";
-        }
+	int responseCode = connection.getResponseCode();
+	if (responseCode == HttpURLConnection.HTTP_OK) {
+	    try (Scanner scanner = new Scanner(connection.getInputStream(), "UTF-8")) {
+		scanner.useDelimiter("\\A");
+		return scanner.hasNext() ? scanner.next() : "";
+	    }
+	} else {
+	    throw new IOException("Error al realizar la solicitud. Código de respuesta: " + responseCode);
+	}
     }
 
-    public JSONObject getExchangeRates() throws IOException {
-        String apiUrl = "http://api.exchangeratesapi.io/v1/latest?access_key=60c47e6459f60f070cf52e898adfc7cb&format=1";
-        String apiResponse = sendRequestExchangeRates(apiUrl);
-        JSONObject jsonResponse = new JSONObject(apiResponse);
-        // Obtener los rates del JSON
-        JSONObject rates = jsonResponse.getJSONObject("rates");
-        return rates;
+    public JSONObject getExchangeSymbols() throws IOException {
+	String apiUrl = "https://api.exchangerate.host/symbols";
+	String apiResponse = sendRequestExchangeRates(apiUrl);
+	JSONObject jsonResponse = new JSONObject(apiResponse);
+	// Obtener los rates del JSON
+	JSONObject symbols = jsonResponse.getJSONObject("symbols");
+	return symbols;
+    }
+
+    public void setSelectedCurrencies(String selectedCurrencyDe, String selectedCurrencyA) {
+	this.fromCurrency = selectedCurrencyDe;
+	this.toCurrency = selectedCurrencyA;
+    }
+
+    public void setAmount(double amount) {
+	this.amount = amount;
+    }
+
+    public double convertirMonedas() throws IOException {
+	if (this.fromCurrency != null && this.toCurrency != null) {
+	    String apiUrl = "https://api.exchangerate.host/convert?from=" + this.fromCurrency + "&to=" + this.toCurrency + "&amount=" + this.amount;
+	    String apiResponse = sendRequestExchangeRates(apiUrl);
+	    JSONObject jsonResponse = new JSONObject(apiResponse);
+	    return jsonResponse.getDouble("result");
+	} else {
+	    throw new IOException("Monedas no seleccionadas.");
+	}
+    }
+
+    public List<JSONObject> obtenerListaOrdenadaDeSymbols(JSONObject symbols) throws IOException {
+	List<JSONObject> symbolList = new ArrayList<>(symbols.length());
+	for (Object value : symbols.toMap().values()) {
+	    symbolList.add(new JSONObject((Map<?, ?>) value));
+	}
+	symbolList.sort(Comparator.comparing(json -> json.getString("description")));
+	return symbolList;
     }
 }
