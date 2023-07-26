@@ -39,10 +39,12 @@ git clone https://github.com/Junior-HJ/Serpost_CLI
 
 En proceso
 
+**Dame una ⭐ si te gusta este proyecto😜!**
+
 ## Contribuciones
 
 Si deseas contribuir a este proyecto, por favor envía un pull request. Estaré encantado de revisarlo y fusionarlo si es apropiado.
 
-## Licencia
+## Licencia © [Junior-HJ](https://www.linkedin.com/in/shilariojara/)
 
 Este proyecto está bajo la Licencia Apache 2.0. Revisa el [LICENSE](LICENSE) para más detalles.
