@@ -7,7 +7,7 @@ Este proyecto es un conversor de temperatura y monedas desarrollado en Java.
 1. Clonar el repositorio en tu máquina local usando el siguiente comando:
 
 ```
-git clone https://github.com/Junior-HJ/Serpost_CLI
+git clone https://github.com/Junior-HJ/ConversorAlura
 ```
 
 2. Abre el proyecto en tu IDE favorito, como NetBeans.
