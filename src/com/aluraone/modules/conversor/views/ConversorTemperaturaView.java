@@ -4,6 +4,13 @@
  */
 package com.aluraone.modules.conversor.views;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.DoubleUnaryOperator;
+import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 /**
@@ -12,17 +19,57 @@ import javax.swing.WindowConstants;
  */
 public class ConversorTemperaturaView extends javax.swing.JFrame {
 
+    private Map<String, DoubleUnaryOperator> conversions;
+    private DecimalFormat decimalFormat;
+
     /**
      * Creates new form ConversorMonedasView
      */
     public ConversorTemperaturaView() {
-	setTitle("MENU");
+	setTitle("CONVERTIR TEMPERATURA");
+	setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	initComponents();
-	this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-	this.setSize(766, 539); // [766, 539]
-	this.setResizable(false); // Deshabilitar la redimensión
-	this.setLocationRelativeTo(null); // Generar en el centro de la pantalla
-	this.setVisible(true);
+	setupConversionsMap();
+	setupDecimalFormat();
+	setupKeyListeners();
+	buildConvertionsMap();
+	setLocationRelativeTo(null); // Generar en el centro de la pantalla
+	setResizable(false); // Deshabilitar la redimensión
+	setVisible(true);
+    }
+
+    private void setupConversionsMap() {
+	conversions = new HashMap<>();
+    }
+
+    private void setupDecimalFormat() {
+	decimalFormat = new DecimalFormat("#.##");
+    }
+
+    private void setupKeyListeners() {
+	txtCelsius.addKeyListener(new MyKeyListener(txtCelsius));
+	txtFahrenheit.addKeyListener(new MyKeyListener(txtFahrenheit));
+	txtKelvin.addKeyListener(new MyKeyListener(txtKelvin));
+	txtRankine.addKeyListener(new MyKeyListener(txtRankine));
+    }
+
+    private void buildConvertionsMap() {
+	conversions.put("Celsius to Fahrenheit", celsius -> (celsius * 9 / 5) + 32);
+	conversions.put("Celsius to Kelvin", celsius -> celsius + 273.15);
+	conversions.put("Celsius to Rankine", celsius -> (celsius + 273.15) * 9 / 5);
+	conversions.put("Fahrenheit to Celsius", fahrenheit -> (fahrenheit - 32) * 5 / 9);
+	conversions.put("Fahrenheit to Kelvin", fahrenheit -> (fahrenheit + 459.67) * 5 / 9);
+	conversions.put("Fahrenheit to Rankine", fahrenheit -> fahrenheit + 459.67);
+	conversions.put("Kelvin to Celsius", kelvin -> kelvin - 273.15);
+	conversions.put("Kelvin to Fahrenheit", kelvin -> (kelvin * 9 / 5) - 459.67);
+	conversions.put("Kelvin to Rankine", kelvin -> kelvin * 9 / 5);
+	conversions.put("Rankine to Celsius", rankine -> (rankine - 491.67) * 5 / 9);
+	conversions.put("Rankine to Fahrenheit", rankine -> rankine - 459.67);
+	conversions.put("Rankine to Kelvin", rankine -> rankine * 5 / 9);
+    }
+
+    private double convertTemperature(double inputTemp, String conversionKey) {
+	return conversions.get(conversionKey).applyAsDouble(inputTemp);
     }
 
     /**
@@ -37,18 +84,18 @@ public class ConversorTemperaturaView extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         panMonedas = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        txtCelsius = new javax.swing.JTextField();
+        txtFahrenheit = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        txtKelvin = new javax.swing.JTextField();
+        txtRankine = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(241, 238, 238));
 
@@ -56,27 +103,21 @@ public class ConversorTemperaturaView extends javax.swing.JFrame {
         panMonedas.setForeground(new java.awt.Color(60, 63, 65));
         panMonedas.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         panMonedas.setPreferredSize(new java.awt.Dimension(220, 220));
-        panMonedas.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                panMonedasMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                panMonedasMouseEntered(evt);
-            }
-        });
 
         jLabel3.setBackground(new java.awt.Color(255, 255, 255));
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Celsius:");
 
-        jTextField1.setBackground(new java.awt.Color(255, 255, 255));
-        jTextField1.setForeground(new java.awt.Color(0, 0, 0));
-        jTextField1.setToolTipText("");
+        txtCelsius.setBackground(new java.awt.Color(255, 255, 255));
+        txtCelsius.setForeground(new java.awt.Color(0, 0, 0));
+        txtCelsius.setToolTipText("");
+        txtCelsius.setName("Celsius"); // NOI18N
 
-        jTextField2.setBackground(new java.awt.Color(255, 255, 255));
-        jTextField2.setForeground(new java.awt.Color(0, 0, 0));
-        jTextField2.setToolTipText("");
+        txtFahrenheit.setBackground(new java.awt.Color(255, 255, 255));
+        txtFahrenheit.setForeground(new java.awt.Color(0, 0, 0));
+        txtFahrenheit.setToolTipText("");
+        txtFahrenheit.setName("Fahrenheit"); // NOI18N
 
         jLabel4.setBackground(new java.awt.Color(255, 255, 255));
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -88,13 +129,15 @@ public class ConversorTemperaturaView extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("Kelvin:");
 
-        jTextField3.setBackground(new java.awt.Color(255, 255, 255));
-        jTextField3.setForeground(new java.awt.Color(0, 0, 0));
-        jTextField3.setToolTipText("");
+        txtKelvin.setBackground(new java.awt.Color(255, 255, 255));
+        txtKelvin.setForeground(new java.awt.Color(0, 0, 0));
+        txtKelvin.setToolTipText("");
+        txtKelvin.setName("Kelvin"); // NOI18N
 
-        jTextField4.setBackground(new java.awt.Color(255, 255, 255));
-        jTextField4.setForeground(new java.awt.Color(0, 0, 0));
-        jTextField4.setToolTipText("");
+        txtRankine.setBackground(new java.awt.Color(255, 255, 255));
+        txtRankine.setForeground(new java.awt.Color(0, 0, 0));
+        txtRankine.setToolTipText("");
+        txtRankine.setName("Rankine"); // NOI18N
 
         jLabel6.setBackground(new java.awt.Color(255, 255, 255));
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -114,10 +157,10 @@ public class ConversorTemperaturaView extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(jLabel5)
                     .addComponent(jLabel6)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
-                    .addComponent(jTextField2)
-                    .addComponent(jTextField3)
-                    .addComponent(jTextField4))
+                    .addComponent(txtCelsius, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                    .addComponent(txtFahrenheit)
+                    .addComponent(txtKelvin)
+                    .addComponent(txtRankine))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 205, Short.MAX_VALUE)
                 .addComponent(jLabel7)
                 .addGap(120, 120, 120))
@@ -128,22 +171,22 @@ public class ConversorTemperaturaView extends javax.swing.JFrame {
                 .addGap(6, 6, 6)
                 .addComponent(jLabel3)
                 .addGap(6, 6, 6)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtCelsius, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
                 .addGroup(panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(panMonedasLayout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addGap(6, 6, 6)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtFahrenheit, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)
                         .addComponent(jLabel5)
                         .addGap(6, 6, 6)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtKelvin, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel7))
                 .addGap(6, 6, 6)
                 .addComponent(jLabel6)
                 .addGap(6, 6, 6)
-                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtRankine, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(246, 246, 246))
         );
 
@@ -207,14 +250,71 @@ public class ConversorTemperaturaView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void panMonedasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panMonedasMouseClicked
-        ConversorTemperaturaView conversorMonedasView = new ConversorTemperaturaView();
-        conversorMonedasView.setVisible(true);
-    }//GEN-LAST:event_panMonedasMouseClicked
+    private class MyKeyListener implements KeyListener {
 
-    private void panMonedasMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panMonedasMouseEntered
+	private final JTextField sourceField;
+	private final String[] units = {"Celsius", "Fahrenheit", "Kelvin", "Rankine"};
 
-    }//GEN-LAST:event_panMonedasMouseEntered
+	public MyKeyListener(JTextField sourceField) {
+	    this.sourceField = sourceField;
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+	    String text = sourceField.getText();
+	    if (text.isEmpty()) {
+		clearAllFields();
+		return;
+	    }
+
+	    try {
+		double value = Double.parseDouble(text);
+		String sourceUnit = sourceField.getName();
+		for (String targetUnit : units) {
+		    if (!sourceUnit.equals(targetUnit)) {
+			String conversionKey = sourceUnit + " to " + targetUnit;
+			JTextField targetField = getTargetField(targetUnit);
+			targetField.setText(decimalFormat.format(convertTemperature(value, conversionKey)));
+		    }
+		}
+	    } catch (NumberFormatException ex) {
+		clearAllFields();
+	    }
+	}
+
+	private void clearAllFields() {
+	    for (String unit : units) {
+		JTextField targetField = getTargetField(unit);
+		targetField.setText("");
+	    }
+	}
+
+	private JTextField getTargetField(String unit) {
+	    switch (unit) {
+		case "Celsius" -> {
+		    return txtCelsius;
+		}
+		case "Fahrenheit" -> {
+		    return txtFahrenheit;
+		}
+		case "Kelvin" -> {
+		    return txtKelvin;
+		}
+		case "Rankine" -> {
+		    return txtRankine;
+		}
+		default -> throw new IllegalArgumentException("Invalid unit");
+	    }
+	}
+    }
 
     /**
      * @param args the command line arguments
@@ -242,15 +342,9 @@ public class ConversorTemperaturaView extends javax.swing.JFrame {
 	    java.util.logging.Logger.getLogger(ConversorTemperaturaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	}
 	//</editor-fold>
-	//</editor-fold>
-	//</editor-fold>
-	//</editor-fold>
-	//</editor-fold>
-	//</editor-fold>
-	//</editor-fold>
-	//</editor-fold>
 
 	/* Create and display the form */
+	
 	java.awt.EventQueue.invokeLater(new Runnable() {
 	    public void run() {
 		new ConversorTemperaturaView().setVisible(true);
@@ -267,10 +361,10 @@ public class ConversorTemperaturaView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
     private javax.swing.JPanel panMonedas;
+    private javax.swing.JTextField txtCelsius;
+    private javax.swing.JTextField txtFahrenheit;
+    private javax.swing.JTextField txtKelvin;
+    private javax.swing.JTextField txtRankine;
     // End of variables declaration//GEN-END:variables
 }

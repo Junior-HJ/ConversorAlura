@@ -7,11 +7,7 @@ package com.aluraone.modules.conversor.views;
 import javax.swing.WindowConstants;
 import com.aluraone.modules.conversor.services.ConversorMonedasService;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
@@ -30,7 +26,7 @@ public class ConversorMonedasView extends javax.swing.JFrame {
      * Creates new form ConversorMonedasView
      */
     public ConversorMonedasView() {
-	setTitle("MENU");
+	setTitle("CONVERTIR MONEDAS");
 	initComponents();
 	this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	this.setResizable(false); // Deshabilitar la redimensión

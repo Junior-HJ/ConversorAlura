@@ -55,17 +55,24 @@ public class MenuView extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 panMonedasMouseClicked(evt);
             }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                panMonedasMouseEntered(evt);
-            }
         });
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/aluraone/modules/conversor/views/images/icons8-euro-exchange-100.png"))); // NOI18N
+        jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel2MouseClicked(evt);
+            }
+        });
 
         jLabel3.setBackground(new java.awt.Color(255, 255, 255));
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Convertir monedas");
+        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel3MouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout panMonedasLayout = new javax.swing.GroupLayout(panMonedas);
         panMonedas.setLayout(panMonedasLayout);
@@ -94,12 +101,27 @@ public class MenuView extends javax.swing.JFrame {
         panTemperatura.setBackground(new java.awt.Color(204, 204, 204));
         panTemperatura.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         panTemperatura.setPreferredSize(new java.awt.Dimension(220, 220));
+        panTemperatura.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panTemperaturaMouseClicked(evt);
+            }
+        });
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/aluraone/modules/conversor/views/images/temperature.png"))); // NOI18N
+        jLabel4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel4MouseClicked(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("Convertir temperatura");
+        jLabel5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel5MouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout panTemperaturaLayout = new javax.swing.GroupLayout(panTemperatura);
         panTemperatura.setLayout(panTemperaturaLayout);
@@ -184,15 +206,39 @@ public class MenuView extends javax.swing.JFrame {
         setBounds(0, 0, 635, 474);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void panMonedasMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panMonedasMouseEntered
-	
-    }//GEN-LAST:event_panMonedasMouseEntered
-
     private void panMonedasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panMonedasMouseClicked
-        ConversorMonedasView conversorMonedasView = new ConversorMonedasView();
-	conversorMonedasView.setVisible(true);
+	loadConversorMonedasView();
     }//GEN-LAST:event_panMonedasMouseClicked
 
+    private void panTemperaturaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panTemperaturaMouseClicked
+	loadConversorTemperaturaView();
+    }//GEN-LAST:event_panTemperaturaMouseClicked
+
+    private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
+	loadConversorMonedasView();
+    }//GEN-LAST:event_jLabel2MouseClicked
+
+    private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
+	loadConversorMonedasView();
+    }//GEN-LAST:event_jLabel3MouseClicked
+
+    private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
+	loadConversorTemperaturaView();
+    }//GEN-LAST:event_jLabel4MouseClicked
+
+    private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
+	loadConversorTemperaturaView();
+    }//GEN-LAST:event_jLabel5MouseClicked
+
+    private void loadConversorMonedasView(){
+	ConversorMonedasView conversorMonedasView = new ConversorMonedasView();
+	conversorMonedasView.setVisible(true);
+    }
+    
+    private void loadConversorTemperaturaView(){
+	ConversorTemperaturaView conversorTemperaturaView = new ConversorTemperaturaView();
+	conversorTemperaturaView.setVisible(true);
+    }
     /**
      * @param args the command line arguments
      */
