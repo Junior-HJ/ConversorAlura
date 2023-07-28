@@ -4,6 +4,9 @@
  */
 package com.aluraone.modules.conversor.views;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 /**
@@ -22,6 +25,12 @@ public class MenuView extends javax.swing.JFrame {
 	this.setResizable(false); // Deshabilitar la redimensión
 	this.setLocationRelativeTo(null); // Generar en el centro de la pantalla
 	this.setVisible(true);
+	addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                confirmExit(); // Mostrar el mensaje de confirmación antes de cerrar la ventana
+            }
+        });
     }
 
     /**
@@ -206,6 +215,11 @@ public class MenuView extends javax.swing.JFrame {
         setBounds(0, 0, 635, 474);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void confirmExit() {
+	JOptionPane.showMessageDialog(this, "Programa finalizado con éxito", "Conversor Alura", JOptionPane.INFORMATION_MESSAGE);
+	dispose(); // Cierra la ventana y libera todos los recursos asociados
+    }
+
     private void panMonedasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panMonedasMouseClicked
 	loadConversorMonedasView();
     }//GEN-LAST:event_panMonedasMouseClicked
@@ -230,15 +244,16 @@ public class MenuView extends javax.swing.JFrame {
 	loadConversorTemperaturaView();
     }//GEN-LAST:event_jLabel5MouseClicked
 
-    private void loadConversorMonedasView(){
-	ConversorMonedasView conversorMonedasView = new ConversorMonedasView();
+    private void loadConversorMonedasView() {
+	ConversorMonedasView conversorMonedasView = new ConversorMonedasView(this,true);
 	conversorMonedasView.setVisible(true);
     }
-    
-    private void loadConversorTemperaturaView(){
-	ConversorTemperaturaView conversorTemperaturaView = new ConversorTemperaturaView();
+
+    private void loadConversorTemperaturaView() {
+	ConversorTemperaturaView conversorTemperaturaView = new ConversorTemperaturaView(this, true);
 	conversorTemperaturaView.setVisible(true);
     }
+
     /**
      * @param args the command line arguments
      */

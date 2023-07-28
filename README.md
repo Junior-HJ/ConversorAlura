@@ -20,6 +20,11 @@ git clone https://github.com/Junior-HJ/ConversorAlura
 
 6. Para utilizar el conversor de temperatura, ingresa el valor de temperatura en el campo de texto correspondiente a la unidad que desees convertir (Celsius, Fahrenheit, Kelvin o Rankine). Las conversiones se realizarán automáticamente mientras ingresas el valor.
 
+> Captura de pantalla de la aplicación en ejecución.
+
+<img src="_demo/demo_conversor.gif" alt="Demosntración de la aplicación" width="600"/>
+
+**Dame una ⭐ si te gusta este proyecto😜!**
 ## Funcionalidades
 
 - **Conversor de Moneda:** Permite convertir entre diversas unidades de moneda, incluyendo Dólar, Euro, Peso argentino, Peso chileno, Peso colombiano, Peso mexicano, Peso uruguayo, Real brasileño, Sol Peruano y Yen japonés. Además, utiliza la API de [exchangerate.host](https://exchangerate.host/) para obtener tasas de cambio actualizadas de más de 170 monedas.
@@ -34,12 +39,6 @@ git clone https://github.com/Junior-HJ/ConversorAlura
 
 - Java
 - Swing (para la interfaz gráfica)
-
-## Captura de pantalla
-
-En proceso
-
-**Dame una ⭐ si te gusta este proyecto😜!**
 
 ## Contribuciones
 

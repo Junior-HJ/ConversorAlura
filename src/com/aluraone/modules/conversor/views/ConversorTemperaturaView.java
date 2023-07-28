@@ -1,6 +1,6 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
 package com.aluraone.modules.conversor.views;
 
@@ -12,36 +12,32 @@ import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-
+import com.aluraone.modules.conversor.services.ConversorTemperaturaService;
 /**
  *
  * @author Jr
  */
-public class ConversorTemperaturaView extends javax.swing.JFrame {
+public class ConversorTemperaturaView extends javax.swing.JDialog {
 
+    private final ConversorTemperaturaService conversorTemperaturaService;
     private Map<String, DoubleUnaryOperator> conversions;
     private DecimalFormat decimalFormat;
 
+    
     /**
-     * Creates new form ConversorMonedasView
+     * Creates new form ConversorMonedas2View
      */
-    public ConversorTemperaturaView() {
+    public ConversorTemperaturaView(java.awt.Frame parent, boolean modal) {
+	super(parent, modal);
+	initComponents();
+	conversorTemperaturaService = new ConversorTemperaturaService();
 	setTitle("CONVERTIR TEMPERATURA");
 	setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-	initComponents();
-	setupConversionsMap();
 	setupDecimalFormat();
 	setupKeyListeners();
-	buildConvertionsMap();
 	setLocationRelativeTo(null); // Generar en el centro de la pantalla
 	setResizable(false); // Deshabilitar la redimensión
-	setVisible(true);
     }
-
-    private void setupConversionsMap() {
-	conversions = new HashMap<>();
-    }
-
     private void setupDecimalFormat() {
 	decimalFormat = new DecimalFormat("#.##");
     }
@@ -52,26 +48,7 @@ public class ConversorTemperaturaView extends javax.swing.JFrame {
 	txtKelvin.addKeyListener(new MyKeyListener(txtKelvin));
 	txtRankine.addKeyListener(new MyKeyListener(txtRankine));
     }
-
-    private void buildConvertionsMap() {
-	conversions.put("Celsius to Fahrenheit", celsius -> (celsius * 9 / 5) + 32);
-	conversions.put("Celsius to Kelvin", celsius -> celsius + 273.15);
-	conversions.put("Celsius to Rankine", celsius -> (celsius + 273.15) * 9 / 5);
-	conversions.put("Fahrenheit to Celsius", fahrenheit -> (fahrenheit - 32) * 5 / 9);
-	conversions.put("Fahrenheit to Kelvin", fahrenheit -> (fahrenheit + 459.67) * 5 / 9);
-	conversions.put("Fahrenheit to Rankine", fahrenheit -> fahrenheit + 459.67);
-	conversions.put("Kelvin to Celsius", kelvin -> kelvin - 273.15);
-	conversions.put("Kelvin to Fahrenheit", kelvin -> (kelvin * 9 / 5) - 459.67);
-	conversions.put("Kelvin to Rankine", kelvin -> kelvin * 9 / 5);
-	conversions.put("Rankine to Celsius", rankine -> (rankine - 491.67) * 5 / 9);
-	conversions.put("Rankine to Fahrenheit", rankine -> rankine - 459.67);
-	conversions.put("Rankine to Kelvin", rankine -> rankine * 5 / 9);
-    }
-
-    private double convertTemperature(double inputTemp, String conversionKey) {
-	return conversions.get(conversionKey).applyAsDouble(inputTemp);
-    }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -249,7 +226,7 @@ public class ConversorTemperaturaView extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+        
     private class MyKeyListener implements KeyListener {
 
 	private final JTextField sourceField;
@@ -282,7 +259,7 @@ public class ConversorTemperaturaView extends javax.swing.JFrame {
 		    if (!sourceUnit.equals(targetUnit)) {
 			String conversionKey = sourceUnit + " to " + targetUnit;
 			JTextField targetField = getTargetField(targetUnit);
-			targetField.setText(decimalFormat.format(convertTemperature(value, conversionKey)));
+			targetField.setText(decimalFormat.format(conversorTemperaturaService.convertTemperature(value, conversionKey)));
 		    }
 		}
 	    } catch (NumberFormatException ex) {
@@ -315,7 +292,7 @@ public class ConversorTemperaturaView extends javax.swing.JFrame {
 	    }
 	}
     }
-
+     
     /**
      * @param args the command line arguments
      */
@@ -342,12 +319,21 @@ public class ConversorTemperaturaView extends javax.swing.JFrame {
 	    java.util.logging.Logger.getLogger(ConversorTemperaturaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	}
 	//</editor-fold>
+	//</editor-fold>
+	//</editor-fold>
+	//</editor-fold>
 
-	/* Create and display the form */
-	
+	/* Create and display the dialog */
 	java.awt.EventQueue.invokeLater(new Runnable() {
 	    public void run() {
-		new ConversorTemperaturaView().setVisible(true);
+		ConversorTemperaturaView dialog = new ConversorTemperaturaView(new javax.swing.JFrame(), true);
+		dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent e) {
+			System.exit(0);
+		    }
+		});
+		dialog.setVisible(true);
 	    }
 	});
     }

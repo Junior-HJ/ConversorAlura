@@ -1,10 +1,9 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
 package com.aluraone.modules.conversor.views;
 
-import javax.swing.WindowConstants;
 import com.aluraone.modules.conversor.services.ConversorMonedasService;
 import java.io.IOException;
 import java.util.List;
@@ -12,32 +11,76 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
 import org.json.JSONObject;
 
 /**
  *
  * @author Jr
  */
-public class ConversorMonedasView extends javax.swing.JFrame {
+public class ConversorMonedasView extends javax.swing.JDialog {
 
     ConversorMonedasService conversorMonedasService = new ConversorMonedasService();
-
     /**
-     * Creates new form ConversorMonedasView
+     * Creates new form ConversorMonedas2View
      */
-    public ConversorMonedasView() {
+    public ConversorMonedasView(java.awt.Frame parent, boolean modal) {
+	super(parent, modal);
 	setTitle("CONVERTIR MONEDAS");
 	initComponents();
 	this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	this.setResizable(false); // Deshabilitar la redimensión
 	this.setLocationRelativeTo(null); // Generar en el centro de la pantalla
-	this.setVisible(true);
 	try {
 	    cargarDatosEnCboDe();
 	    cargarDatosEnCboA();
 	} catch (IOException ex) {
 	    Logger.getLogger(ConversorMonedasView.class.getName()).log(Level.SEVERE, null, ex);
 	}
+    }
+    
+    private String obtenerCodigoMonedaSeleccionada(JComboBox<String> comboBox) {
+	String selectedCurrency = (String) comboBox.getSelectedItem();
+	if (selectedCurrency != null) {
+	    int startIndex = selectedCurrency.lastIndexOf("(");
+	    int endIndex = selectedCurrency.lastIndexOf(")");
+	    if (startIndex >= 0 && endIndex > startIndex) {
+		return selectedCurrency.substring(startIndex + 1, endIndex);
+	    }
+	}
+	return null;
+    }
+
+    private void convertirMonedas() throws IOException {
+	String selectedCurrencyDe = obtenerCodigoMonedaSeleccionada(cboDe);
+	String selectedCurrencyA = obtenerCodigoMonedaSeleccionada(cboA);
+	String amount = txtImporte.getText();
+	if (selectedCurrencyDe != null && selectedCurrencyA != null && !"".equals(amount)) {
+	    conversorMonedasService.setSelectedCurrencies(selectedCurrencyDe, selectedCurrencyA);
+	    conversorMonedasService.setAmount(Double.parseDouble(amount));
+	    lblResultado.setText(amount + " " + cboDe.getSelectedItem() + " equivalen a " + String.valueOf(conversorMonedasService.convertirMonedas()) + " " + cboA.getSelectedItem());
+	} else {
+        JOptionPane.showMessageDialog(this, "Debe seleccionar las monedas y ademas ingresar el importe a convertir", "Error", JOptionPane.ERROR_MESSAGE);
+	}
+    }
+
+    private void cargarDatosEnComboBox(JComboBox<String> comboBox) throws IOException {
+    comboBox.removeAllItems();
+    JSONObject symbols = conversorMonedasService.getExchangeSymbols();
+    List<JSONObject> symbolList = conversorMonedasService.obtenerListaOrdenadaDeSymbols(symbols);
+    for (JSONObject currency : symbolList) {
+        String description = currency.getString("description");
+        String code = currency.getString("code");
+        comboBox.addItem(description + " (" + code + ")");
+    }
+}
+
+    private void cargarDatosEnCboDe() throws IOException {
+	cargarDatosEnComboBox(cboDe);
+    }
+
+    private void cargarDatosEnCboA() throws IOException {
+	cargarDatosEnComboBox(cboA);
     }
 
     /**
@@ -63,7 +106,7 @@ public class ConversorMonedasView extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(241, 238, 238));
 
@@ -110,9 +153,6 @@ public class ConversorMonedasView extends javax.swing.JFrame {
         btnConvertir.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnConvertirMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnConvertirMouseEntered(evt);
             }
         });
 
@@ -256,69 +296,21 @@ public class ConversorMonedasView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnConvertirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConvertirMouseClicked
-	try {
-	    convertirMonedas();
-	} catch (IOException ex) {
-	    Logger.getLogger(ConversorMonedasView.class.getName()).log(Level.SEVERE, null, ex);
-	}
-    }//GEN-LAST:event_btnConvertirMouseClicked
-
-    private void btnConvertirMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConvertirMouseEntered
-
-    }//GEN-LAST:event_btnConvertirMouseEntered
-
     private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
-	try {
-	    convertirMonedas();
-	} catch (IOException ex) {
-	    Logger.getLogger(ConversorMonedasView.class.getName()).log(Level.SEVERE, null, ex);
-	}
+        try {
+            convertirMonedas();
+        } catch (IOException ex) {
+            Logger.getLogger(ConversorMonedasView.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jLabel7MouseClicked
 
-    private String obtenerCodigoMonedaSeleccionada(JComboBox<String> comboBox) {
-	String selectedCurrency = (String) comboBox.getSelectedItem();
-	if (selectedCurrency != null) {
-	    int startIndex = selectedCurrency.lastIndexOf("(");
-	    int endIndex = selectedCurrency.lastIndexOf(")");
-	    if (startIndex >= 0 && endIndex > startIndex) {
-		return selectedCurrency.substring(startIndex + 1, endIndex);
-	    }
-	}
-	return null;
-    }
-
-    private void convertirMonedas() throws IOException {
-	String selectedCurrencyDe = obtenerCodigoMonedaSeleccionada(cboDe);
-	String selectedCurrencyA = obtenerCodigoMonedaSeleccionada(cboA);
-	String amount = txtImporte.getText();
-	if (selectedCurrencyDe != null && selectedCurrencyA != null && !"".equals(amount)) {
-	    conversorMonedasService.setSelectedCurrencies(selectedCurrencyDe, selectedCurrencyA);
-	    conversorMonedasService.setAmount(Double.parseDouble(amount));
-	    lblResultado.setText(amount + " " + cboDe.getSelectedItem() + " equivalen a " + String.valueOf(conversorMonedasService.convertirMonedas()) + " " + cboA.getSelectedItem());
-	} else {
-        JOptionPane.showMessageDialog(this, "Debe seleccionar las monedas y ademas ingresar el importe a convertir", "Error", JOptionPane.ERROR_MESSAGE);
-	}
-    }
-
-    private void cargarDatosEnComboBox(JComboBox<String> comboBox) throws IOException {
-    comboBox.removeAllItems();
-    JSONObject symbols = conversorMonedasService.getExchangeSymbols();
-    List<JSONObject> symbolList = conversorMonedasService.obtenerListaOrdenadaDeSymbols(symbols);
-    for (JSONObject currency : symbolList) {
-        String description = currency.getString("description");
-        String code = currency.getString("code");
-        comboBox.addItem(description + " (" + code + ")");
-    }
-}
-
-    private void cargarDatosEnCboDe() throws IOException {
-	cargarDatosEnComboBox(cboDe);
-    }
-
-    private void cargarDatosEnCboA() throws IOException {
-	cargarDatosEnComboBox(cboA);
-    }
+    private void btnConvertirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConvertirMouseClicked
+        try {
+            convertirMonedas();
+        } catch (IOException ex) {
+            Logger.getLogger(ConversorMonedasView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnConvertirMouseClicked
 
     /**
      * @param args the command line arguments
@@ -348,9 +340,18 @@ public class ConversorMonedasView extends javax.swing.JFrame {
 	//</editor-fold>
 	//</editor-fold>
 
-	/* Create and display the form */
-	java.awt.EventQueue.invokeLater(() -> {
-	    new ConversorMonedasView().setVisible(true);
+	/* Create and display the dialog */
+	java.awt.EventQueue.invokeLater(new Runnable() {
+	    public void run() {
+		ConversorMonedasView dialog = new ConversorMonedasView(new javax.swing.JFrame(), true);
+		dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent e) {
+			System.exit(0);
+		    }
+		});
+		dialog.setVisible(true);
+	    }
 	});
     }
 
