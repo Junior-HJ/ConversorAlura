@@ -20,7 +20,7 @@ git clone https://github.com/Junior-HJ/ConversorAlura
 
 6. Para utilizar el conversor de temperatura, ingresa el valor de temperatura en el campo de texto correspondiente a la unidad que desees convertir (Celsius, Fahrenheit, Kelvin o Rankine). Las conversiones se realizarán automáticamente mientras ingresas el valor.
 
-> Captura de pantalla de la aplicación en ejecución.
+> Demostración de la aplicación
 
 <img src="_demo/demo_conversor.gif" alt="Demosntración de la aplicación" width="600"/>
 
