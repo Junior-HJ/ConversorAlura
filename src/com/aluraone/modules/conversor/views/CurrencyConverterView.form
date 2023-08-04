@@ -93,13 +93,13 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="btnConvertir" alignment="1" min="-2" pref="110" max="-2" attributes="0"/>
+                                  <Component id="btnConvert" alignment="1" min="-2" pref="110" max="-2" attributes="0"/>
                                   <Group type="102" alignment="1" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Group type="102" alignment="0" attributes="0">
                                               <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
-                                              <Component id="txtImporte" min="-2" pref="161" max="-2" attributes="0"/>
+                                              <Component id="txtAmount" min="-2" pref="161" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                       <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
@@ -107,7 +107,7 @@
                                           <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Group type="102" alignment="0" attributes="0">
                                               <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
-                                              <Component id="cboDe" min="-2" pref="270" max="-2" attributes="0"/>
+                                              <Component id="cboFrom" min="-2" pref="270" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                       <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
@@ -115,7 +115,7 @@
                                           <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Group type="102" alignment="0" attributes="0">
                                               <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
-                                              <Component id="cboA" min="-2" pref="270" max="-2" attributes="0"/>
+                                              <Component id="cboTo" min="-2" pref="270" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -137,12 +137,12 @@
                       </Group>
                       <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="txtImporte" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
-                          <Component id="cboDe" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
-                          <Component id="cboA" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
+                          <Component id="txtAmount" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
+                          <Component id="cboFrom" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
+                          <Component id="cboTo" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                      <Component id="btnConvertir" min="-2" pref="50" max="-2" attributes="0"/>
+                      <Component id="btnConvert" min="-2" pref="50" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                       <Component id="lblResultado" min="-2" pref="25" max="-2" attributes="0"/>
                       <EmptySpace pref="23" max="32767" attributes="0"/>
@@ -165,7 +165,7 @@
                 <Property name="text" type="java.lang.String" value="Importe"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtImporte">
+            <Component class="javax.swing.JTextField" name="txtAmount">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -190,7 +190,7 @@
                 <Property name="text" type="java.lang.String" value="De:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JComboBox" name="cboDe">
+            <Component class="javax.swing.JComboBox" name="cboFrom">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -225,7 +225,7 @@
                 <Property name="text" type="java.lang.String" value="a:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JComboBox" name="cboA">
+            <Component class="javax.swing.JComboBox" name="cboTo">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -259,7 +259,7 @@
                 </Property>
               </Properties>
             </Component>
-            <Container class="javax.swing.JPanel" name="btnConvertir">
+            <Container class="javax.swing.JPanel" name="btnConvert">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="99" green="99" red="99" type="rgb"/>
@@ -275,7 +275,7 @@
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnConvertirMouseClicked"/>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnConvertMouseClicked"/>
               </Events>
 
               <Layout>

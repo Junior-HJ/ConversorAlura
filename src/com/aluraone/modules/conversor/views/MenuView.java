@@ -245,13 +245,13 @@ public class MenuView extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel5MouseClicked
 
     private void loadConversorMonedasView() {
-	ConversorMonedasView conversorMonedasView = new ConversorMonedasView(this,true);
-	conversorMonedasView.setVisible(true);
+	CurrencyConverterView currencyConverterView = new CurrencyConverterView(this,true);
+	currencyConverterView.setVisible(true);
     }
 
     private void loadConversorTemperaturaView() {
-	ConversorTemperaturaView conversorTemperaturaView = new ConversorTemperaturaView(this, true);
-	conversorTemperaturaView.setVisible(true);
+	TemperatureConverterView temperatureConverterView = new TemperatureConverterView(this, true);
+	temperatureConverterView.setVisible(true);
     }
 
     /**

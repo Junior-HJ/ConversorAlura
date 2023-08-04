@@ -14,13 +14,13 @@ import java.util.Map;
 import java.util.Scanner;
 import org.json.JSONObject;
 
-public class ConversorMonedasService {
+public class CurrencyConverterService {
 
     private String fromCurrency;
     private String toCurrency;
     private double amount;
 
-    public ConversorMonedasService() {
+    public CurrencyConverterService() {
     }
 
     public String sendRequestExchangeRates(String apiUrl) throws IOException {
@@ -57,7 +57,7 @@ public class ConversorMonedasService {
 	this.amount = amount;
     }
 
-    public double convertirMonedas() throws IOException {
+    public double convertCurrencies() throws IOException {
 	if (this.fromCurrency != null && this.toCurrency != null) {
 	    String apiUrl = "https://api.exchangerate.host/convert?from=" + this.fromCurrency + "&to=" + this.toCurrency + "&amount=" + this.amount;
 	    String apiResponse = sendRequestExchangeRates(apiUrl);
@@ -68,7 +68,7 @@ public class ConversorMonedasService {
 	}
     }
 
-    public List<JSONObject> obtenerListaOrdenadaDeSymbols(JSONObject symbols) throws IOException {
+    public List<JSONObject> getSortedSymbolList(JSONObject symbols) throws IOException {
 	List<JSONObject> symbolList = new ArrayList<>(symbols.length());
 	for (Object value : symbols.toMap().values()) {
 	    symbolList.add(new JSONObject((Map<?, ?>) value));

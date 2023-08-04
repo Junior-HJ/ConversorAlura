@@ -4,8 +4,9 @@
  */
 package com.aluraone.modules.conversor.views;
 
-import com.aluraone.modules.conversor.services.ConversorMonedasService;
+import com.aluraone.modules.conversor.services.CurrencyConverterService;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,28 +19,35 @@ import org.json.JSONObject;
  *
  * @author Jr
  */
-public class ConversorMonedasView extends javax.swing.JDialog {
+public class CurrencyConverterView extends javax.swing.JDialog {
 
-    ConversorMonedasService conversorMonedasService = new ConversorMonedasService();
+    CurrencyConverterService currencyConverterService = new CurrencyConverterService();
+    private DecimalFormat decimalFormat;
+
     /**
      * Creates new form ConversorMonedas2View
      */
-    public ConversorMonedasView(java.awt.Frame parent, boolean modal) {
+    public CurrencyConverterView(java.awt.Frame parent, boolean modal) {
 	super(parent, modal);
-	setTitle("CONVERTIR MONEDAS");
-	initComponents();
-	this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-	this.setResizable(false); // Deshabilitar la redimensión
-	this.setLocationRelativeTo(null); // Generar en el centro de la pantalla
 	try {
-	    cargarDatosEnCboDe();
-	    cargarDatosEnCboA();
+	    setTitle("CONVERTIR MONEDAS");
+	    initComponents();
+	    this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+	    this.setResizable(false); // Deshabilitar la redimensión
+	    this.setLocationRelativeTo(null); // Generar en el centro de la pantalla
+	    setupDecimalFormat();
+	    loadSymbolsToCboDe();
+	    loadSymbolsToCboA();
 	} catch (IOException ex) {
-	    Logger.getLogger(ConversorMonedasView.class.getName()).log(Level.SEVERE, null, ex);
+	    Logger.getLogger(CurrencyConverterView.class.getName()).log(Level.SEVERE, null, ex);
 	}
     }
-    
-    private String obtenerCodigoMonedaSeleccionada(JComboBox<String> comboBox) {
+
+    private void setupDecimalFormat() {
+	decimalFormat = new DecimalFormat("#.##");
+    }
+
+    private String getSelectedCurrencyCode(JComboBox<String> comboBox) {
 	String selectedCurrency = (String) comboBox.getSelectedItem();
 	if (selectedCurrency != null) {
 	    int startIndex = selectedCurrency.lastIndexOf("(");
@@ -51,36 +59,46 @@ public class ConversorMonedasView extends javax.swing.JDialog {
 	return null;
     }
 
-    private void convertirMonedas() throws IOException {
-	String selectedCurrencyDe = obtenerCodigoMonedaSeleccionada(cboDe);
-	String selectedCurrencyA = obtenerCodigoMonedaSeleccionada(cboA);
-	String amount = txtImporte.getText();
+    private void convertCurrencies() throws IOException {
+	if(!isNumeric(txtAmount.getText())){
+	    JOptionPane.showMessageDialog(this, "El importe debe ser numerico", "Error", JOptionPane.ERROR_MESSAGE);
+	    return;
+	}
+	String selectedCurrencyDe = getSelectedCurrencyCode(cboFrom);
+	String selectedCurrencyA = getSelectedCurrencyCode(cboTo);
+	String amount = txtAmount.getText();
 	if (selectedCurrencyDe != null && selectedCurrencyA != null && !"".equals(amount)) {
-	    conversorMonedasService.setSelectedCurrencies(selectedCurrencyDe, selectedCurrencyA);
-	    conversorMonedasService.setAmount(Double.parseDouble(amount));
-	    lblResultado.setText(amount + " " + cboDe.getSelectedItem() + " equivalen a " + String.valueOf(conversorMonedasService.convertirMonedas()) + " " + cboA.getSelectedItem());
+	    currencyConverterService.setSelectedCurrencies(selectedCurrencyDe, selectedCurrencyA);
+	    currencyConverterService.setAmount(Double.parseDouble(amount));
+	    lblResultado.setText(amount + " " + cboFrom.getSelectedItem()
+		    + " equivalen a " + String.valueOf(decimalFormat.format(currencyConverterService.convertCurrencies()))
+		    + " " + cboTo.getSelectedItem());
 	} else {
-        JOptionPane.showMessageDialog(this, "Debe seleccionar las monedas y ademas ingresar el importe a convertir", "Error", JOptionPane.ERROR_MESSAGE);
+	    JOptionPane.showMessageDialog(this, "Debe seleccionar las monedas y ademas ingresar el importe a convertir", "Error", JOptionPane.ERROR_MESSAGE);
 	}
     }
 
-    private void cargarDatosEnComboBox(JComboBox<String> comboBox) throws IOException {
-    comboBox.removeAllItems();
-    JSONObject symbols = conversorMonedasService.getExchangeSymbols();
-    List<JSONObject> symbolList = conversorMonedasService.obtenerListaOrdenadaDeSymbols(symbols);
-    for (JSONObject currency : symbolList) {
-        String description = currency.getString("description");
-        String code = currency.getString("code");
-        comboBox.addItem(description + " (" + code + ")");
-    }
-}
-
-    private void cargarDatosEnCboDe() throws IOException {
-	cargarDatosEnComboBox(cboDe);
+    private void loadSymbolsToComboBox(JComboBox<String> comboBox) throws IOException {
+	comboBox.removeAllItems();
+	JSONObject symbols = currencyConverterService.getExchangeSymbols();
+	List<JSONObject> symbolList = currencyConverterService.getSortedSymbolList(symbols);
+	for (JSONObject currency : symbolList) {
+	    String description = currency.getString("description");
+	    String code = currency.getString("code");
+	    comboBox.addItem(description + " (" + code + ")");
+	}
     }
 
-    private void cargarDatosEnCboA() throws IOException {
-	cargarDatosEnComboBox(cboA);
+    private void loadSymbolsToCboDe() throws IOException {
+	loadSymbolsToComboBox(cboFrom);
+    }
+
+    private void loadSymbolsToCboA() throws IOException {
+	loadSymbolsToComboBox(cboTo);
+    }
+
+    private boolean isNumeric(String strNum) {
+        return strNum.matches("-?\\d+(\\.\\d+)?");
     }
 
     /**
@@ -95,13 +113,13 @@ public class ConversorMonedasView extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         panMonedas = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        txtImporte = new javax.swing.JTextField();
+        txtAmount = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        cboDe = new javax.swing.JComboBox<>();
+        cboFrom = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
-        cboA = new javax.swing.JComboBox<>();
+        cboTo = new javax.swing.JComboBox<>();
         lblResultado = new javax.swing.JLabel();
-        btnConvertir = new javax.swing.JPanel();
+        btnConvert = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -120,39 +138,39 @@ public class ConversorMonedasView extends javax.swing.JDialog {
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Importe");
 
-        txtImporte.setBackground(new java.awt.Color(255, 255, 255));
-        txtImporte.setForeground(new java.awt.Color(0, 0, 0));
-        txtImporte.setToolTipText("");
+        txtAmount.setBackground(new java.awt.Color(255, 255, 255));
+        txtAmount.setForeground(new java.awt.Color(0, 0, 0));
+        txtAmount.setToolTipText("");
 
         jLabel4.setBackground(new java.awt.Color(255, 255, 255));
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("De:");
 
-        cboDe.setBackground(new java.awt.Color(255, 255, 255));
-        cboDe.setForeground(new java.awt.Color(0, 0, 0));
-        cboDe.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboFrom.setBackground(new java.awt.Color(255, 255, 255));
+        cboFrom.setForeground(new java.awt.Color(0, 0, 0));
+        cboFrom.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel5.setBackground(new java.awt.Color(255, 255, 255));
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("a:");
 
-        cboA.setBackground(new java.awt.Color(255, 255, 255));
-        cboA.setForeground(new java.awt.Color(0, 0, 0));
-        cboA.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboTo.setBackground(new java.awt.Color(255, 255, 255));
+        cboTo.setForeground(new java.awt.Color(0, 0, 0));
+        cboTo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         lblResultado.setBackground(new java.awt.Color(255, 255, 255));
         lblResultado.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lblResultado.setForeground(new java.awt.Color(0, 0, 0));
 
-        btnConvertir.setBackground(new java.awt.Color(153, 153, 153));
-        btnConvertir.setForeground(new java.awt.Color(60, 63, 65));
-        btnConvertir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnConvertir.setPreferredSize(new java.awt.Dimension(220, 220));
-        btnConvertir.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnConvert.setBackground(new java.awt.Color(153, 153, 153));
+        btnConvert.setForeground(new java.awt.Color(60, 63, 65));
+        btnConvert.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnConvert.setPreferredSize(new java.awt.Dimension(220, 220));
+        btnConvert.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnConvertirMouseClicked(evt);
+                btnConvertMouseClicked(evt);
             }
         });
 
@@ -169,18 +187,18 @@ public class ConversorMonedasView extends javax.swing.JDialog {
             }
         });
 
-        javax.swing.GroupLayout btnConvertirLayout = new javax.swing.GroupLayout(btnConvertir);
-        btnConvertir.setLayout(btnConvertirLayout);
-        btnConvertirLayout.setHorizontalGroup(
-            btnConvertirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(btnConvertirLayout.createSequentialGroup()
+        javax.swing.GroupLayout btnConvertLayout = new javax.swing.GroupLayout(btnConvert);
+        btnConvert.setLayout(btnConvertLayout);
+        btnConvertLayout.setHorizontalGroup(
+            btnConvertLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(btnConvertLayout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(jLabel7)
                 .addContainerGap(21, Short.MAX_VALUE))
         );
-        btnConvertirLayout.setVerticalGroup(
-            btnConvertirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(btnConvertirLayout.createSequentialGroup()
+        btnConvertLayout.setVerticalGroup(
+            btnConvertLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(btnConvertLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
                 .addContainerGap())
@@ -198,25 +216,25 @@ public class ConversorMonedasView extends javax.swing.JDialog {
                     .addGroup(panMonedasLayout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addGroup(panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnConvertir, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnConvert, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(panMonedasLayout.createSequentialGroup()
                                 .addGroup(panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel3)
                                     .addGroup(panMonedasLayout.createSequentialGroup()
                                         .addGap(6, 6, 6)
-                                        .addComponent(txtImporte, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(txtAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(19, 19, 19)
                                 .addGroup(panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel4)
                                     .addGroup(panMonedasLayout.createSequentialGroup()
                                         .addGap(6, 6, 6)
-                                        .addComponent(cboDe, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(cboFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(20, 20, 20)
                                 .addGroup(panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel5)
                                     .addGroup(panMonedasLayout.createSequentialGroup()
                                         .addGap(6, 6, 6)
-                                        .addComponent(cboA, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                                        .addComponent(cboTo, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
         panMonedasLayout.setVerticalGroup(
@@ -229,11 +247,11 @@ public class ConversorMonedasView extends javax.swing.JDialog {
                     .addComponent(jLabel5))
                 .addGap(6, 6, 6)
                 .addGroup(panMonedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtImporte, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cboDe, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cboA, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboTo, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)
-                .addComponent(btnConvertir, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnConvert, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31)
                 .addComponent(lblResultado, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(23, Short.MAX_VALUE))
@@ -297,20 +315,20 @@ public class ConversorMonedasView extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
-        try {
-            convertirMonedas();
-        } catch (IOException ex) {
-            Logger.getLogger(ConversorMonedasView.class.getName()).log(Level.SEVERE, null, ex);
-        }
+	try {
+	    convertCurrencies();
+	} catch (IOException ex) {
+	    Logger.getLogger(CurrencyConverterView.class.getName()).log(Level.SEVERE, null, ex);
+	}
     }//GEN-LAST:event_jLabel7MouseClicked
 
-    private void btnConvertirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConvertirMouseClicked
-        try {
-            convertirMonedas();
-        } catch (IOException ex) {
-            Logger.getLogger(ConversorMonedasView.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnConvertirMouseClicked
+    private void btnConvertMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConvertMouseClicked
+	try {
+	    convertCurrencies();
+	} catch (IOException ex) {
+	    Logger.getLogger(CurrencyConverterView.class.getName()).log(Level.SEVERE, null, ex);
+	}
+    }//GEN-LAST:event_btnConvertMouseClicked
 
     /**
      * @param args the command line arguments
@@ -329,21 +347,23 @@ public class ConversorMonedasView extends javax.swing.JDialog {
 		}
 	    }
 	} catch (ClassNotFoundException ex) {
-	    java.util.logging.Logger.getLogger(ConversorMonedasView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	    java.util.logging.Logger.getLogger(CurrencyConverterView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	} catch (InstantiationException ex) {
-	    java.util.logging.Logger.getLogger(ConversorMonedasView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	    java.util.logging.Logger.getLogger(CurrencyConverterView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	} catch (IllegalAccessException ex) {
-	    java.util.logging.Logger.getLogger(ConversorMonedasView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	    java.util.logging.Logger.getLogger(CurrencyConverterView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-	    java.util.logging.Logger.getLogger(ConversorMonedasView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	    java.util.logging.Logger.getLogger(CurrencyConverterView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	}
+	//</editor-fold>
+	//</editor-fold>
 	//</editor-fold>
 	//</editor-fold>
 
 	/* Create and display the dialog */
 	java.awt.EventQueue.invokeLater(new Runnable() {
 	    public void run() {
-		ConversorMonedasView dialog = new ConversorMonedasView(new javax.swing.JFrame(), true);
+		CurrencyConverterView dialog = new CurrencyConverterView(new javax.swing.JFrame(), true);
 		dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent e) {
@@ -356,9 +376,9 @@ public class ConversorMonedasView extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel btnConvertir;
-    private javax.swing.JComboBox<String> cboA;
-    private javax.swing.JComboBox<String> cboDe;
+    private javax.swing.JPanel btnConvert;
+    private javax.swing.JComboBox<String> cboFrom;
+    private javax.swing.JComboBox<String> cboTo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -368,6 +388,6 @@ public class ConversorMonedasView extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblResultado;
     private javax.swing.JPanel panMonedas;
-    private javax.swing.JTextField txtImporte;
+    private javax.swing.JTextField txtAmount;
     // End of variables declaration//GEN-END:variables
 }

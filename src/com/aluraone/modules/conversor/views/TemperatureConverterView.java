@@ -7,30 +7,25 @@ package com.aluraone.modules.conversor.views;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.DoubleUnaryOperator;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import com.aluraone.modules.conversor.services.ConversorTemperaturaService;
+import com.aluraone.modules.conversor.services.TemperaturaConverterService;
 /**
  *
  * @author Jr
  */
-public class ConversorTemperaturaView extends javax.swing.JDialog {
+public class TemperatureConverterView extends javax.swing.JDialog {
 
-    private final ConversorTemperaturaService conversorTemperaturaService;
-    private Map<String, DoubleUnaryOperator> conversions;
+    private final TemperaturaConverterService temperatureConverterService;
     private DecimalFormat decimalFormat;
-
     
     /**
      * Creates new form ConversorMonedas2View
      */
-    public ConversorTemperaturaView(java.awt.Frame parent, boolean modal) {
+    public TemperatureConverterView(java.awt.Frame parent, boolean modal) {
 	super(parent, modal);
 	initComponents();
-	conversorTemperaturaService = new ConversorTemperaturaService();
+	temperatureConverterService = new TemperaturaConverterService();
 	setTitle("CONVERTIR TEMPERATURA");
 	setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	setupDecimalFormat();
@@ -38,6 +33,7 @@ public class ConversorTemperaturaView extends javax.swing.JDialog {
 	setLocationRelativeTo(null); // Generar en el centro de la pantalla
 	setResizable(false); // Deshabilitar la redimensión
     }
+    
     private void setupDecimalFormat() {
 	decimalFormat = new DecimalFormat("#.##");
     }
@@ -259,7 +255,7 @@ public class ConversorTemperaturaView extends javax.swing.JDialog {
 		    if (!sourceUnit.equals(targetUnit)) {
 			String conversionKey = sourceUnit + " to " + targetUnit;
 			JTextField targetField = getTargetField(targetUnit);
-			targetField.setText(decimalFormat.format(conversorTemperaturaService.convertTemperature(value, conversionKey)));
+			targetField.setText(decimalFormat.format(temperatureConverterService.convertTemperature(value, conversionKey)));
 		    }
 		}
 	    } catch (NumberFormatException ex) {
@@ -288,7 +284,7 @@ public class ConversorTemperaturaView extends javax.swing.JDialog {
 		case "Rankine" -> {
 		    return txtRankine;
 		}
-		default -> throw new IllegalArgumentException("Invalid unit");
+		default -> throw new IllegalArgumentException("Unidad Invalida");
 	    }
 	}
     }
@@ -310,14 +306,18 @@ public class ConversorTemperaturaView extends javax.swing.JDialog {
 		}
 	    }
 	} catch (ClassNotFoundException ex) {
-	    java.util.logging.Logger.getLogger(ConversorTemperaturaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	    java.util.logging.Logger.getLogger(TemperatureConverterView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	} catch (InstantiationException ex) {
-	    java.util.logging.Logger.getLogger(ConversorTemperaturaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	    java.util.logging.Logger.getLogger(TemperatureConverterView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	} catch (IllegalAccessException ex) {
-	    java.util.logging.Logger.getLogger(ConversorTemperaturaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	    java.util.logging.Logger.getLogger(TemperatureConverterView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-	    java.util.logging.Logger.getLogger(ConversorTemperaturaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	    java.util.logging.Logger.getLogger(TemperatureConverterView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	}
+	//</editor-fold>
+	//</editor-fold>
+	//</editor-fold>
+	//</editor-fold>
 	//</editor-fold>
 	//</editor-fold>
 	//</editor-fold>
@@ -326,7 +326,7 @@ public class ConversorTemperaturaView extends javax.swing.JDialog {
 	/* Create and display the dialog */
 	java.awt.EventQueue.invokeLater(new Runnable() {
 	    public void run() {
-		ConversorTemperaturaView dialog = new ConversorTemperaturaView(new javax.swing.JFrame(), true);
+		TemperatureConverterView dialog = new TemperatureConverterView(new javax.swing.JFrame(), true);
 		dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent e) {

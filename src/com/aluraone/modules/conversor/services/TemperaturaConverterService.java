@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 
-public final class ConversorTemperaturaService {
+public final class TemperaturaConverterService {
 
     private final Map<String, DoubleUnaryOperator> conversions;
 
-    public ConversorTemperaturaService() {
+    public TemperaturaConverterService() {
 	conversions = new HashMap<>();
 	buildConvertionsMap();
     }
